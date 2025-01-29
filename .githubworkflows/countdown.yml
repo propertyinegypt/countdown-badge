@@ -1,0 +1,47 @@
+name: Update Countdown
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # Läuft alle 5 Minuten
+  workflow_dispatch:  # Manuelles Starten möglich
+
+jobs:
+  update-countdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Berechne Countdown
+        run: |
+          TARGET_DATE=$(date -d "2025-05-18 00:00:00" +%s)
+          NOW=$(date +%s)
+          DIFF=$((TARGET_DATE - NOW))
+
+          if [ "$DIFF" -le 0 ]; then
+            MESSAGE="Countdown vorbei!"
+          else
+            DAYS=$((DIFF / 86400))
+            HOURS=$(((DIFF % 86400) / 3600))
+            MINUTES=$(((DIFF % 3600) / 60))
+            SECONDS=$((DIFF % 60))
+            MESSAGE="${DAYS}d ${HOURS}h ${MINUTES}m ${SECONDS}s"
+          fi
+
+          echo "Neuer Countdown: $MESSAGE"
+
+          echo '{
+            "schemaVersion": 1,
+            "label": "Countdown",
+            "message": "'"$MESSAGE"'",
+            "color": "gray",
+            "labelColor": "black"
+          }' > countdown.json
+
+      - name: Commit & Push Änderungen
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add countdown.json
+          git commit -m "⏳ Countdown aktualisiert" || echo "Keine Änderungen"
+          git push
