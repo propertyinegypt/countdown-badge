@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown to 18.05.2025</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #countdown { font-size: 2em; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Countdown to 18.05.2025</h1>
+    <div id="countdown"></div>
+
+    <script>
+        function updateCountdown() {
+            const targetDate = new Date("2025-05-18T00:00:00").getTime();
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                document.getElementById("countdown").innerText = `${days} days left`;
+            } else {
+                document.getElementById("countdown").innerText = "Event has passed!";
+            }
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000 * 60 * 60);
+    </script>
+</body>
+</html>
